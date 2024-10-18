@@ -88,14 +88,16 @@ const Umraha = () => {
 
   const handleUpdatePackage = async (updatePackage) => {
     try { 
-      const response = await axios.put(`http://localhost:3002/api/umrahaall/${updatePackage._id}`, {
-        updatePackage, 
-        
-          headers: {
-            'Content-Type': 'application/json',
-            'x-access-token': 'Bearer your_token_here',
-          },
-      })
+      const response = await axios.put(`http://localhost:3002/api/umrahaall/${updatePackage._id}`, 
+        updatePackage,  // Directly send the data without wrapping it in another object
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'x-access-token': 'Bearer your_token_here',
+            },
+        }
+    );
+    
       const updatedPackages = packages.map(pkg => 
         pkg._id === updatePackage._id ? { ...pkg, ...updatePackage } : pkg
       );

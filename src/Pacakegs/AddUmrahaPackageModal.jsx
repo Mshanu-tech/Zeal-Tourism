@@ -45,7 +45,7 @@ const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose, onSubmit, editPack
         title: '',
         description: '',
         images: [''],
-        thumbnail: '',
+        thumbnail: 'rtewtrwer',
         pdf: [{ type: '', link: '' }],
         details: '',
         faculty: [''],
@@ -66,10 +66,10 @@ const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose, onSubmit, editPack
         },
         faq: [{ question: '', answer: '' }],
         rating: {
-          reviews: [''],
+          reviews: ['orry'],
           stars: 4.0,
           ratingCount: 0,
-          review: '',
+          review: 'rty',
           details: []
         }
       });
@@ -184,6 +184,30 @@ const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose, onSubmit, editPack
     setPage((prev) => Math.max(prev - 1, 1));
   };
 
+
+// Handle thumbnail upload
+const handleThumbnailUpload = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const imageUrl = URL.createObjectURL(file);
+    setPackageData((prevData) => ({
+      ...prevData,
+      thumbnail: imageUrl, // Use URL for preview
+    }));
+  }
+};
+
+// Handle multiple images upload
+const handleImagesUpload = (e) => {
+  const files = Array.from(e.target.files);
+  const imageUrls = files.map((file) => URL.createObjectURL(file));
+
+  setPackageData((prevData) => ({
+    ...prevData,
+    images: [...prevData.images, ...imageUrls], // Append new images
+  }));
+};
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editPackage) {
@@ -218,23 +242,39 @@ const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose, onSubmit, editPack
               placeholder="Description"
               className="w-full p-2 border"
             />
-            <input
-              type="file"
-              // accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  const imageUrl = URL.createObjectURL(file);
-                  setPackageData({
-                    ...packageData,
-                    thumbnail: file,
-                    // thumbnailUrl: imageUrl,
-                  });
-                }
-              }}
-              className="w-full p-2 border"
-            />
-            <textarea
+           
+
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleThumbnailUpload}
+        className="w-full p-2 border"
+      />
+      {/* {packageData.thumbnail && (
+        <img
+          src={packageData.thumbnail}
+          alt="Thumbnail Preview"
+          className="mt-2 w-32 h-32 object-cover"
+        />
+      )} */}
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={handleImagesUpload}
+        className="w-full p-2 border"
+      />
+      {/* <div className="flex gap-2 mt-2">
+        {packageData.images.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt={`Image ${index + 1}`}
+            className="w-24 h-24 object-cover"
+          />
+        ))}
+      </div>            */}
+       <textarea
               name="details"
               value={packageData.details}
               onChange={handleChange}

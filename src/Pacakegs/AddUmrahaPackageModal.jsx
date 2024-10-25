@@ -208,6 +208,7 @@ const handleImagesUpload = (e) => {
   }));
 };
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editPackage) {

@@ -97,6 +97,7 @@ const Umraha = () => {
             },
         }
     );
+    console.log(updatePackage);
     
       const updatedPackages = packages.map(pkg => 
         pkg._id === updatePackage._id ? { ...pkg, ...updatePackage } : pkg

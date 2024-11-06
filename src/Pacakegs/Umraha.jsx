@@ -9,10 +9,12 @@ import { useNavigate } from "react-router-dom";
 
 const Umraha = () => {
   const navigate = useNavigate();
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [packages, setPackages] = useState(null);
   const [editPackage, setEditPackage] = useState(null);
 
+  const handleClick = ()=>{
+     navigate('/AddUmrah')
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,19 +30,10 @@ const Umraha = () => {
     fetchData();
   }, []);
 
-  const openModal = () => {
-    setModalIsOpen(true);
-  };
 
-  const closeModal = () => {
-    setModalIsOpen(false);
-  };
 
   const handleEdit = (pkg) => {
     console.log(`Edit package with id: ${pkg._id}`);
-    setEditPackage(pkg)
-    setModalIsOpen(true);
-
   };
 
   const handleDelete = async (id) => {
@@ -54,65 +47,88 @@ const Umraha = () => {
     }
   };
 
-  const handleView = (pkg) => {    
-    navigate(`/Umrahaall/view-package/${pkg._id}`, {state: {packageData: pkg }})
+  const handleView = (pkg) => {
+    navigate(`/Umrahaall/view-package/${pkg._id}`, { state: { packageData: pkg } })
   };
 
   const handleAddPackage = async (newPackage) => {
-    // Add the new package to the list of packages
     console.log(newPackage);
-    
-    const updatedPackages = [...packages, { id: packages.length + 1, ...newPackage }];
-    setPackages(updatedPackages);
+
+
+    // Create a new FormData object
+    const formData = new FormData();
+    // Append other data fields to formData
+
+    // Append simple fields
+    formData.append('title', newPackage.title);
+    formData.append('description', newPackage.description);
+    formData.append('overview', newPackage.overview);
+    formData.append('tourOverview', newPackage.tourOverview);
+
+    // Append the image file (thumbnail)
+    formData.append("thumbnail", newPackage.thumbnail);
+    newPackage.images.forEach((image, index) => {
+      formData.append(`images`, image);
+    });
+
+    // Append array fields by JSON stringifying them
+    formData.append('pdf', JSON.stringify(newPackage.pdf));
+    formData.append('faculty', JSON.stringify(newPackage.faculty));
+    formData.append('inclusion', JSON.stringify(newPackage.inclusion));
+    formData.append('exclusion', JSON.stringify(newPackage.exclusion));
+
+    // Append nested objects by JSON stringifying them
+    formData.append('itinerary', JSON.stringify(newPackage.itinerary));
+    formData.append('pricing', JSON.stringify(newPackage.pricing));
+    formData.append('bookingPolicy', JSON.stringify(newPackage.bookingPolicy));
+    // formData.append('faq', JSON.stringify(newPackage.faq));
 
     try {
-      // Send the new package to the backend
-      const response = await axios.post('http://localhost:3002/api/umrahaall', {
-        ...newPackage // Send the new package data, not the whole packages array
-      },
-        {
+      // Send the FormData to the backend
+      const response = await axios.post('http://localhost:3002/api/umrahaall', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'x-access-token': 'Bearer your_token_here',
+        },
+      });
+      setPackages((prevPackages) => [...prevPackages, response.data]);
 
-          headers: {
-            'Content-Type': 'application/json', // specify JSON if needed
-            'x-access-token': 'Beareryour_token_here', // if authentication is required
-          },
-        }
-
-      );
-
-      console.log('Response from backend:', response.results);
+      console.log('Response from backend:', response.data);
     } catch (error) {
-      console.error('Error:', error.response?.data || error.message); // Catch and handle errors
+      console.error('Error:', error.response?.data || error.message);
     }
   };
 
+
+
+
   const handleUpdatePackage = async (updatePackage) => {
-    try { 
-      const response = await axios.put(`http://localhost:3002/api/umrahaall/${updatePackage._id}`, 
+    try {
+      const response = await axios.put(`http://localhost:3002/api/umrahaall/${updatePackage._id}`,
         updatePackage,  // Directly send the data without wrapping it in another object
         {
-            headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': 'Bearer your_token_here',
-            },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': 'Bearer your_token_here',
+          },
         }
-    );
-    console.log(updatePackage);
-    
-      const updatedPackages = packages.map(pkg => 
+      );
+      console.log(updatePackage);
+
+      const updatedPackages = packages.map(pkg =>
         pkg._id === updatePackage._id ? { ...pkg, ...updatePackage } : pkg
       );
       setPackages(updatedPackages);
       setEditPackage(null);
-      setModalIsOpen(false); 
+      setModalIsOpen(false);
       console.log('Updated package:', response);
 
     } catch (error) {
       console.error('Error updating package:', error);
-      
+
     }
   };
-  
+
 
   return (
     <div className="container mx-auto p-4">
@@ -148,7 +164,7 @@ const Umraha = () => {
           <h2 className="text-2xl font-bold">Add New Package</h2>
           <button
             className="bg-green-500 text-white p-2 rounded-full"
-            onClick={openModal} // Open modal
+            onClick={handleClick} // Open modal
           >
             +
           </button>
@@ -179,7 +195,7 @@ const Umraha = () => {
               <div>{pkg.location}</div>
               <div>
                 <img
-                  src={pkg.imageUrl}
+                  src={pkg.thumbnail}
                   alt={pkg.name}
                   className="w-16 h-16 object-cover rounded-lg"
                 />
@@ -204,26 +220,6 @@ const Umraha = () => {
         )}
 
       </div>
-
-      {/* AddUmrahaPackageModal Component */}
-      {
-  editPackage ? (
-    <AddUmrahaPackageModal
-      isOpen={modalIsOpen}
-      onRequestClose={closeModal}
-      editPackage={editPackage}
-      onSubmit={handleUpdatePackage}
-    />
-  ) : (
-    <AddUmrahaPackageModal
-      isOpen={modalIsOpen}
-      onRequestClose={closeModal}
-      onSubmit={handleAddPackage}
-    />
-  )
-}
-
-
     </div>
   );
 };

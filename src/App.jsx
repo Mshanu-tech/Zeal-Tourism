@@ -9,6 +9,7 @@ import Holidays from './Pacakegs/Holidays';
 import GlobalVisas from './Pacakegs/GlobalVisas';
 import AdminLogin from './AdminUI/AdminLogin';
 import UmrahaPackageView from './Pacakegs/UmrahaPackageView';
+import AddUmrahPackageModal from './Pacakegs/AddUmrahaPackageModal';
 
 // Dummy components for the routes
 const Packages = () => <h2>Packages</h2>;
@@ -55,6 +56,7 @@ function App() {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/deals" element={<Deals />} />
           <Route path="/Umrahaall" element={<Umraha />} />
+          <Route path="/AddUmrah" element={<AddUmrahPackageModal />} />
           <Route path="/Umrahaall/view-package/:id" element={<UmrahaPackageView />} />          
           <Route path="/Holidays" element={<Holidays />} />
           <Route path="/feedback" element={<Feedback />} />

@@ -18,7 +18,7 @@ const AddUmrahPackageModal = () => {
     details: '',
     faculty: '',
     overview: '',
-    itinerary: [{ title: '', description: '', place: '', startDate: '', endDate: '', details: [{ title: '', icon: '', category: '', location: '', room: '', checkIn: '', checkout: '' }] }],
+    itinerary: { title: '', description: '', place: '', startDate: '', endDate: '', details: [{ title: '', icon: '', category: '', location: '', room: '', checkIn: '', checkout: '' }] },
     tourOverview: '',
     inclusion: '',
     exclusion: '',
@@ -27,8 +27,8 @@ const AddUmrahPackageModal = () => {
       tax: [{ title: '', amount: 40, currency: '' }]
     },
     bookingPolicy: {
-      cancellation: [{ title: '', description: '' }],
-      childPolicy: [{ title: '', description: '' }],
+      cancellation: { title: '', description: '' },
+      childPolicy: { title: '', description: '' },
       otherPolicies: [{ title: '', description: '' }]
     },
     faq: [{ question: '', answer: '' }],
@@ -38,22 +38,52 @@ const AddUmrahPackageModal = () => {
 
 
   const addMoreDetailsSubmit = (details) => {
-    console.log(details);
-    closeMoreDetailsModal();
+    setPackageData((prevPackageData) => ({
+      ...prevPackageData,
+      overview: details.overview,
+      tourOverview: details.tourOverview,
+      faculty: details.faculty,
+      inclusion: details.inclusion,
+      exclusion: details.exclusion,
+      itinerary: details.itinerary
+    }));
+      closeMoreDetailsModal();
   };
 
   const addItinerySubmit = (itinerary) => {
     console.log(itinerary);
+    setPackageData((prevPackageData) => ({
+      ...prevPackageData,
+
+    }))
     closeItineryModal();
   };
 
   const addPricingSubmit = (pricingData) => {
     console.log(pricingData);
+    setPackageData((prevPackageData) => ({
+      ...prevPackageData,
+      pricing:{
+        ...prevPackageData.pricing,
+        packageCost: pricingData.packageCost,
+        tax: pricingData.tax
+      }
+    }))
     closePricingModal();
   };
 
   const addBookingPolicy = (policy) => {
     console.log(policy);
+    setPackageData((prevPackageData) => ({
+      ...prevPackageData,
+      bookingPolicy:{
+      ...prevPackageData.bookingPolicy,
+      cancellation: policy.cancellation,
+      childPolicy: policy.childPolicy,
+      otherPolicies: policy.otherPolicies
+      },
+      faq: policy.faq
+    }))
     closeBookingPolicyModal();
   }
 
@@ -99,61 +129,19 @@ const AddUmrahPackageModal = () => {
         formDataToSend.append("thumbnail", packageData.thumbnail);
       }
 
+      //Handle Pricing
+      formDataToSend.append("pricing", JSON.stringify(packageData.pricing))
 
-      // Handle FAQ data
-      const faqData = Array.isArray(globalVisaData.faq) ? globalVisaData.faq : [globalVisaData.faq];
-      faqData.forEach((item, index) => {
-        formDataToSend.append(`faq[${index}][question]`, item.question);
-        formDataToSend.append(`faq[${index}][answer]`, item.answer);
-      });
+      // Handle MoreDetails
+      formDataToSend.append("overview", packageData.overview);
+      formDataToSend.append("tourOverview", packageData.tourOverview);
+      formDataToSend.append("faculty", packageData.faculty);
+      formDataToSend.append("inclusion", packageData.inclusion);
+      formDataToSend.append("exclusion", packageData.exclusion);
 
-      // Handle options
-      // globalVisaData.options.forEach((item, index) => {
-      //   formDataToSend.append(`options[${index}][title]`, item.title);
-      //   formDataToSend.append(`options[${index}][badge]`, item.badge);
-      //   formDataToSend.append(`options[${index}][refundStatus]`, item.refundStatus);
-      //   formDataToSend.append(`options[${index}][discount]`, item.discount);
-      //   formDataToSend.append(`options[${index}][discountPercentage]`, item.discountPercentage);
-      //   formDataToSend.append(`options[${index}][price]`, item.price);
-      //   formDataToSend.append(`options[${index}][currency]`, item.currency);
-      //   formDataToSend.append(`options[${index}][footerText]`, item.footerText);
-
-      // Append `priceWithCurrency`
-      // item.priceWithCurrency.forEach((currencyItem, currencyIndex) => {
-      //   formDataToSend.append(`options[${index}][priceWithCurrency][${currencyIndex}][currency]`, currencyItem.currency);
-      //   formDataToSend.append(`options[${index}][priceWithCurrency][${currencyIndex}][price]`, currencyItem.price);
-      //   formDataToSend.append(`options[${index}][priceWithCurrency][${currencyIndex}][discountPrice]`, currencyItem.discountPrice);
-      //   formDataToSend.append(`options[${index}][priceWithCurrency][${currencyIndex}][discountPercentage]`, currencyItem.discountPercentage);
-      // });
-
-      // Append `processType` if it exists
-      // if (item.processType) {
-      //   item.processType.forEach((type, typeIndex) => {
-      //     formDataToSend.append(`options[${index}][processType][${typeIndex}]`, type);
-      //   });
-      // }
-
-      // Append `visaNo` if it exists
-      //   if (item.visaNo) {
-      //     item.visaNo.forEach((visa, visaIndex) => {
-      //       formDataToSend.append(`options[${index}][visaNo][${visaIndex}]`, visa);
-      //     });
-      //   }
-      // });
-
-      // Handle pricing packageCost
-      // globalVisaData.pricing.packageCost.forEach((item, index) => {
-      //   formDataToSend.append(`pricing[packageCost][${index}][title]`, item.title);
-      //   formDataToSend.append(`pricing[packageCost][${index}][amount]`, item.amount);
-      //   formDataToSend.append(`pricing[packageCost][${index}][currency]`, item.currency);
-      // });
-
-      // Handle pricing tax
-      // globalVisaData.pricing.tax.forEach((item, index) => {
-      //   formDataToSend.append(`pricing[tax][${index}][title]`, item.title);
-      //   formDataToSend.append(`pricing[tax][${index}][amount]`, item.amount);
-      //   formDataToSend.append(`pricing[tax][${index}][currency]`, item.currency);
-      // });
+      // Handle Booking Policy
+      formDataToSend.append("faq", JSON.stringify(packageData.faq)) ;
+      formDataToSend.append("bookingPolicy", JSON.stringify(packageData.bookingPolicy));
 
       // Send POST request
       const response = await axios.post(

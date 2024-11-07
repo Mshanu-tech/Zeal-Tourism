@@ -23,7 +23,7 @@ const UmrahBookingPolicyModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
     cancellation: umrahData?.bookingPolicy?.cancellation || '',
     childPolicy: umrahData?.bookingPolicy?.childPolicy || '',
     otherPolicies: umrahData?.bookingPolicy?.otherPolicies || [{ title: '', description: '' }],
-    faq: umrahData?.bookingPolicy?.otherPolicies || [{ title: '', description: '' }]
+    faq: umrahData?.bookingPolicy?.otherPolicies || [{ question: '', answer: '' }]
   });
 
 
@@ -63,7 +63,7 @@ const UmrahBookingPolicyModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
   const addFaq = () => {
     setBookingPolicy({
       ...bookingPolicy,
-      faq: [...bookingPolicy.faq, { title: '', description: '' }],
+      faq: [...bookingPolicy.faq, { question: '', answer: '' }],
     });
   };
 
@@ -141,14 +141,14 @@ const UmrahBookingPolicyModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
           <h6 className="font-bold mb-4">FAQ</h6>
           {bookingPolicy.faq.map((data, index) => (
             <div key={index} className="flex flex-col space-y-2 mb-4 border-b pb-2">
-              <h6 className='font-bold'>Title</h6>
+              <h6 className='font-bold'>Question</h6>
               <div className="flex flex-row space-x-2">
                 <input
                   type="text"
-                  name="title"
-                  value={data.title}
+                  name="question"
+                  value={data.question}
                   onChange={(e) => handleChange(index, e, "faq")}
-                  placeholder="Faq Title"
+                  placeholder="Faq question"
                   className="form-input flex-1"
                 />
                 <button
@@ -159,12 +159,12 @@ const UmrahBookingPolicyModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
                   Remove
                 </button>
               </div>
-              <h6 className='font-bold'>Description</h6>
+              <h6 className='font-bold'>Answer</h6>
               <textarea
-                name="description"
-                value={data.description}
+                name="answer"
+                value={data.answer}
                 onChange={(e) => handleChange(index, e, "faq")}
-                placeholder="Faq Description"
+                placeholder="Faq Answer"
                 className="form-textarea flex-1"
               />
             </div>

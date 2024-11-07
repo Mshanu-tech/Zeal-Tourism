@@ -25,24 +25,6 @@ const UmrahMoreDetailsModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
     faculty: umrahData?.moreDetails?.faculty || '',
     inclusion: umrahData?.moreDetails?.inclusion || '',
     exclusion: umrahData?.moreDetails?.exclusion || '',
-    itinerary: Array.isArray(umrahData?.moreDetails?.itinerary)
-    ? umrahData.moreDetails.itinerary
-    : [{
-        title: '',
-        description: '',
-        place: '',
-        startDate: '',
-        endDate: '',
-        details: [{
-          title: '',
-          icon: '',
-          category: '',
-          location: '',
-          room: '',
-          checkIn: '',
-          checkout: ''
-        }]
-      }]
 });
 
   const handleChange = (event, path) => {

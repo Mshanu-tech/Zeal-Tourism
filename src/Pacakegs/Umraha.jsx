@@ -31,7 +31,6 @@ const Umraha = () => {
   }, []);
 
 
-
   const handleEdit = (pkg) => {
     console.log(`Edit package with id: ${pkg._id}`);
   };

@@ -21,8 +21,6 @@ const customStyles = {
 
 const UmrahPricingModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
   const [pricingData, setPricingData] = useState({
-    title: umrahData.pricing?.title || '',
-    description: umrahData.pricing?.description || '',
     packageCost: umrahData.pricing?.packageCost || [{
       title: '',
       amount: '',
@@ -74,29 +72,7 @@ const UmrahPricingModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
       <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Pricing Details</h2>
         <form onSubmit={handleSubmit}>
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-            Title
-          </label>
-          <input
-            type="text"
-            name="title"
-            value={pricingData.title}
-            onChange={handleChange}
-            placeholder="Title"
-            className="form-input w-full mb-4 p-2 border border-gray-300 rounded"
-          />
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-            Description
-          </label>
-          <textarea
-            name="description"
-            value={pricingData.description}
-            onChange={handleChange}
-            placeholder="Description"
-            className="form-textarea w-full mb-4 p-2 border border-gray-300 rounded"
-          />
-
-          <h3 className="text-xl font-semibold mb-2">Package Cost</h3>
+         <h3 className="text-xl font-semibold mb-2">Package Cost</h3>
           {pricingData.packageCost.map((cost, index) => (
             <div key={index} className="form-array-item mb-4">
               <input

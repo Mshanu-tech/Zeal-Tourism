@@ -32,10 +32,11 @@ const AddUmrahPackageModal = () => {
       otherPolicies: [{ title: '', description: '' }]
     },
     faq: [{ question: '', answer: '' }],
-  });
+  });  
 
   const [itineraryImages, setItineraryImages] = useState({});
 
+console.log(itineraryImages);
 
   const addMoreDetailsSubmit = (details) => {
     setPackageData((prevPackageData) => ({
@@ -54,10 +55,19 @@ const AddUmrahPackageModal = () => {
     console.log(itinerary);
     setPackageData((prevPackageData) => ({
       ...prevPackageData,
-
-    }))
+      itinerary: {
+        ...prevPackageData.itinerary,
+        title: itinerary.title,
+        description: itinerary.description,
+        place: itinerary.place,
+        startDate: itinerary.startDate,
+        endDate: itinerary.endDate,
+        details: itinerary.details
+      }
+    }));
     closeItineryModal();
-  };
+};
+
 
   const addPricingSubmit = (pricingData) => {
     console.log(pricingData);
@@ -104,17 +114,14 @@ const AddUmrahPackageModal = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("sub");
 
     try {
-      // const token = localStorage.getItem("adminToken");
       const formDataToSend = new FormData();
 
       // Append standard fields
       formDataToSend.append("title", packageData.title);
       formDataToSend.append("slug", packageData.slug);
       formDataToSend.append("description", packageData.description);
-      // formDataToSend.append("overview", globalVisaData.overview);
       formDataToSend.append("details", packageData.details);
 
       // Handle images
@@ -128,9 +135,13 @@ const AddUmrahPackageModal = () => {
       if (packageData.thumbnail) {
         formDataToSend.append("thumbnail", packageData.thumbnail);
       }
+      formDataToSend.append("detailsImage", itineraryImages)
 
       //Handle Pricing
       formDataToSend.append("pricing", JSON.stringify(packageData.pricing))
+
+      //Handle Itinery
+      formDataToSend.append("itinerary", JSON.stringify(packageData.itinerary))
 
       // Handle MoreDetails
       formDataToSend.append("overview", packageData.overview);
@@ -283,13 +294,6 @@ const AddUmrahPackageModal = () => {
           <div className="grid gap-3">
             <button
               type="button"
-              className="w-full bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 rounded transition"
-              onClick={openItineryModal}
-            >
-              Add Itinery
-            </button>
-            <button
-              type="button"
               className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded transition"
               onClick={openMoreDetailsModal}
             >
@@ -310,6 +314,13 @@ const AddUmrahPackageModal = () => {
               onClick={openBookingPolicyModal}
             >
               Add Booking Policy
+            </button>
+            <button
+              type="button"
+              className="w-full bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 rounded transition"
+              onClick={openItineryModal}
+            >
+              Add Itinery
             </button>
           </div>
 
@@ -351,7 +362,6 @@ const AddUmrahPackageModal = () => {
         umrahData={packageData}
         onSubmit={addMoreDetailsSubmit}
       />
-
 
       <ItineraryForm
         isOpen={isItineryModalOpen}

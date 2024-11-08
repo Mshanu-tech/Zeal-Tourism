@@ -50,56 +50,6 @@ const Umraha = () => {
     navigate(`/Umrahaall/view-package/${pkg._id}`, { state: { packageData: pkg } })
   };
 
-  const handleAddPackage = async (newPackage) => {
-    console.log(newPackage);
-
-
-    // Create a new FormData object
-    const formData = new FormData();
-    // Append other data fields to formData
-
-    // Append simple fields
-    formData.append('title', newPackage.title);
-    formData.append('description', newPackage.description);
-    formData.append('overview', newPackage.overview);
-    formData.append('tourOverview', newPackage.tourOverview);
-
-    // Append the image file (thumbnail)
-    formData.append("thumbnail", newPackage.thumbnail);
-    newPackage.images.forEach((image, index) => {
-      formData.append(`images`, image);
-    });
-
-    // Append array fields by JSON stringifying them
-    formData.append('pdf', JSON.stringify(newPackage.pdf));
-    formData.append('faculty', JSON.stringify(newPackage.faculty));
-    formData.append('inclusion', JSON.stringify(newPackage.inclusion));
-    formData.append('exclusion', JSON.stringify(newPackage.exclusion));
-
-    // Append nested objects by JSON stringifying them
-    formData.append('itinerary', JSON.stringify(newPackage.itinerary));
-    formData.append('pricing', JSON.stringify(newPackage.pricing));
-    formData.append('bookingPolicy', JSON.stringify(newPackage.bookingPolicy));
-    // formData.append('faq', JSON.stringify(newPackage.faq));
-
-    try {
-      // Send the FormData to the backend
-      const response = await axios.post('http://localhost:3002/api/umrahaall', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'x-access-token': 'Bearer your_token_here',
-        },
-      });
-      setPackages((prevPackages) => [...prevPackages, response.data]);
-
-      console.log('Response from backend:', response.data);
-    } catch (error) {
-      console.error('Error:', error.response?.data || error.message);
-    }
-  };
-
-
-
 
   const handleUpdatePackage = async (updatePackage) => {
     try {

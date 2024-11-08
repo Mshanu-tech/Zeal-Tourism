@@ -23,9 +23,12 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
         description: itineraryData?.description || '',
         place: itineraryData?.place || '',
         dayDetails: itineraryData?.dayDetails || '',
+        startDate: itineraryData?.startDate || '',
+        endDate: itineraryData?.endDate || '',
         details: itineraryData?.details || [{ title: '', image: '', category: '', location: '', room: '', checkIn: '', checkout: '' }]
     });
     const [images, setImages] = useState({});
+
     const handleChange = (e, index = null) => {
         const { name, value } = e.target;
         if (index !== null) {
@@ -36,12 +39,17 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
             setFormData(prev => ({ ...prev, [name]: value }));
         }
     };
+    
 
-    const handleImageChange = (index, e) => {
-        if (e.target.files && e.target.files[0]) {
-            setImages(prev => ({ ...prev, [index]: e.target.files[0] }));
-            setItineraryImages(prev => ({ ...prev, [index]: e.target.files[0] }));
-        }
+    const handleDateChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+    
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setItineraryImages(file)
     };
 
     const addDetail = () => {
@@ -66,20 +74,20 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
     const handleSubmit = (e) => {
         e.preventDefault();
         const itineraryWithImages = formData.details.map((detail, index) => {
-            if (images[index]) {
-                return { ...detail, image: images[index].name };
-            }
             return detail;
         });
+    
 
         const itineraryData = {
             title: formData.title,
             description: formData.description,
             place: formData.place,
             dayDetails: formData.dayDetails,
+            startDate: formData.startDate,   // Include start date
+            endDate: formData.endDate,       // Include end date
             details: itineraryWithImages,
         };
-
+    
         onSubmit(itineraryData); // Pass data to the parent component
     };
 
@@ -98,7 +106,7 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
                         onChange={handleChange}
                         placeholder="Title"
                         className="form-input"
-                        style={{ width: "100%", margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
+                        style={{ width: "100%", margin: "10px 10px 10px 0px", padding: "5px 5px 5px 5px" }}
                     />
                     <h6 className='font-bold'>Description</h6>
                     <textarea
@@ -107,10 +115,26 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
                         onChange={handleChange}
                         placeholder="Description"
                         className="form-textarea"
-                        style={{ width: "100%", margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
-                        />
-                    <h6 className='font-bold'>Place</h6>
+                        style={{ width: "100%", margin: "10px 10px 10px 0px", padding: "5px 5px 5px 5px" }}
+                    />
+                <h6 className='font-bold'>Date</h6>
+                <input
+                    type="date"
+                    name="startDate"
+                    value={formData.startDate}
+                    onChange={handleDateChange}
+                    style={{ margin: "10px 10px 10px 0px", padding: "5px" }}
+                />
+                <input
+                    type="date"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={handleDateChange}
+                    style={{ margin: "10px 10px 10px 0px", padding: "5px" }}
+                />
 
+
+                    <h6 className='font-bold'>Place</h6>
                     <input
                         type="text"
                         name="place"
@@ -118,7 +142,7 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
                         onChange={handleChange}
                         placeholder="Place"
                         className="form-input"
-                        style={{ width: "100%", margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
+                        style={{ width: "100%", margin: "10px 10px 10px 0px", padding: "5px 5px 5px 5px" }}
                     />
                     <h6 className='font-bold'>Day Details</h6>
                     <textarea
@@ -128,8 +152,8 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
                         onChange={handleChange}
                         placeholder="Day Details"
                         className="form-input"
-                        style={{ width: "100%", margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
-                        />
+                        style={{ width: "100%", margin: "10px 10px 10px 0px", padding: "5px 5px 5px 5px" }}
+                    />
                     {/* </div> */}
                     {/* </div> */}
 
@@ -144,11 +168,12 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
                                     onChange={(e) => handleChange(e, index)}
                                     placeholder="Title"
                                     className="form-input"
-                                    style={{ width: "100%", margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
+                                    style={{ width: "100%", margin: "10px 10px 10px 0px", padding: "5px 5px 5px 5px" }}
                                 />
                                 <input
                                     type="file"
-                                    onChange={(e) => handleImageChange(index, e)}
+                                    accept='detailsImage/*'
+                                    onChange={handleImageChange}
                                     className="form-input"
                                     style={{ width: "100%" }}
                                 />
@@ -159,7 +184,7 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
                                     onChange={(e) => handleChange(e, index)}
                                     placeholder="Category"
                                     className="form-input"
-                                    style={{ margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
+                                    style={{ margin: "10px 10px 10px 0px", padding: "5px 5px 5px 5px" }}
                                 />
                                 <input
                                     type="text"
@@ -168,7 +193,7 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
                                     onChange={(e) => handleChange(e, index)}
                                     placeholder="Location"
                                     className="form-input"
-                                    style={{ margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
+                                    style={{ margin: "10px 10px 10px 0px", padding: "5px 5px 5px 5px" }}
                                 />
                                 <input
                                     type="text"
@@ -177,7 +202,7 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
                                     onChange={(e) => handleChange(e, index)}
                                     placeholder="Room"
                                     className="form-input"
-                                    style={{ margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
+                                    style={{ margin: "10px 10px 10px 0px", padding: "5px 5px 5px 5px" }}
                                 />
                                 <input
                                     type="text"
@@ -186,7 +211,7 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
                                     onChange={(e) => handleChange(e, index)}
                                     placeholder="Check-in"
                                     className="form-input"
-                                    style={{ margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
+                                    style={{ margin: "10px 10px 10px 0px", padding: "5px 5px 5px 5px" }}
                                 />
                                 <input
                                     type="text"
@@ -195,7 +220,7 @@ const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itinerar
                                     onChange={(e) => handleChange(e, index)}
                                     placeholder="Check-out"
                                     className="form-input"
-                                    style={{ margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
+                                    style={{ margin: "10px 10px 10px 0px", padding: "5px 5px 5px 5px" }}
                                 />
                                 <button
                                     type="button"
